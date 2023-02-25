@@ -9,9 +9,11 @@
   },
   "dependencies": {
     "next": "13.0.5",
+    "next-progress": "^2.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-infinite-scroll-component": "^6.1.0"
+    "react-infinite-scroll-component": "^6.1.0",
+    "zustand": "^4.3.3"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",

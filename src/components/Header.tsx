@@ -28,6 +28,7 @@ const Header: FunctionComponent = () => {
       <nav className="flex items-center space-x-5 w-full h-20">
         {headers.map((header) => (
           <Link
+            shallow
             key={header.name}
             href={header.href}
             className="flex items-center space-x-2"

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
@@ -7,33 +7,22 @@ import Image from "next/image";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { IResponse } from "../types";
 import { Header } from "../components";
+import useStore from "../hooks/useStore";
 
 import getPhotos from "../api/getPhotos";
 import getNextPage from "../api/getNextPage";
 
-interface IHomeProps {
-  data: IResponse;
-}
-
-const Home: NextPage<IHomeProps> = (props) => {
-  const { data } = props;
-
-  const [photos, setPhotos] = useState(data);
+const Home: NextPage = () => {
+  const { photos, setPhotos } = useStore();
   const [isLoading, setIsLoading] = useState(false);
 
   const getMoreData = async () => {
     setIsLoading(true);
 
     try {
-      const resp = await getNextPage(data.next_page);
-
-      setPhotos((prev) => ({
-        ...prev,
-        ...resp,
-        photos: [...prev.photos, ...resp.photos],
-      }));
+      const resp = await getNextPage(photos.next_page);
+      setPhotos(resp);
     } catch (error) {
       console.log(error);
     } finally {
@@ -84,8 +73,13 @@ const Home: NextPage<IHomeProps> = (props) => {
           }}
         >
           <div className="grid h-full grid-cols-3 items-center gap-7">
-            {photos.photos.map((photo) => (
-              <div key={photo.id} className="w-full">
+            {photos.photos.map((photo, index) => (
+              <Link
+                passHref
+                href={`/${photo.id}`}
+                key={photo.id + index}
+                className="w-full"
+              >
                 <Image
                   src={photo.src.medium}
                   width={photo.width}
@@ -93,7 +87,7 @@ const Home: NextPage<IHomeProps> = (props) => {
                   alt={photo.alt}
                   loading="lazy"
                 />
-              </div>
+              </Link>
             ))}
           </div>
         </InfiniteScroll>
