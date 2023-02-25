@@ -1,12 +1,12 @@
 import "../styles/globals.css";
 
+import type { AppProps } from "next/app";
 import { Fragment, useEffect } from "react";
 
-import type { AppProps } from "next/app";
+import { Router } from "next/router";
 import NextProgress from "next-progress";
 
 import useStore from "../hooks/useStore";
-import { Router } from "next/router";
 
 // This way we can make sure the data is only loaded once
 let dataIsLoaded = false;
@@ -20,8 +20,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     // Listen to route changes when the app start loading the page
-    const handleRouteChange = (url: string) => {
-      if (url === "/") return;
+    const handleRouteChange = (nextUrl: string) => {
+      // We don't want to reset the scroll position when the user is navigating to the home page
+      if (nextUrl === "/") return;
 
       console.log("Save scroll position", window.scrollY);
       useStore.getState().setScrollPosition(window.scrollY);
@@ -38,9 +39,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     // Listen to route changes when the page is loaded
-    const handleRouteChange = (url: string) => {
+    const handleRouteChange = (nextURL: string) => {
       const scrollPosition = useStore.getState().scrollPosition;
-      if (url !== "/" || !scrollPosition) return;
+      if (nextURL !== "/" || !scrollPosition) return;
 
       console.log("Scrolling...");
       setTimeout(() => {
